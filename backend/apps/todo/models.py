@@ -13,7 +13,7 @@ class Task(models.Model):
         MODERATE = 'MODERATE', 'Moderate'
         HIGH = 'HIGH', 'High'
 
-    uuid = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
+    id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
 
     title = models.CharField(max_length=225,blank=False)
     description = models.TextField()

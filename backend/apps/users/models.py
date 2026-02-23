@@ -27,18 +27,17 @@ class UserManager(BaseUserManager):
         
 
 class User(AbstractBaseUser,PermissionsMixin):
-    uuid = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
+    id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=100,blank=True,null=True)
     last_name = models.CharField(max_length=100,blank=True,null=True)
     is_active = models.BooleanField(default=True)
     is_staff  = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
+    date_joined = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
     USERNAME_FIELD = 'email'
-
     REQUIRED_FIELDS = ['first_name']
+    object = UserManager()
 
     def __str__(self):
         return f"{self.email}"
