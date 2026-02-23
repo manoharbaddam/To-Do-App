@@ -4,7 +4,6 @@ from .views import TaskListCreateView,TaskRetrieveUpdateDestroyAPIView
 app_name= 'todo'
 
 urlpatterns = [
-    path('tasks/',TaskListCreateView.as_view(),name='task-list'),
-    path('tasks/<uuid:pk>/', TaskRetrieveUpdateDestroyAPIView.as_view(), name='task-actions'),
-
+    path('',TaskListCreateView.as_view(),name='task-list'),
+    path('/<uuid:pk>/', TaskRetrieveUpdateDestroyAPIView.as_view(), name='task-actions'),
 ]
