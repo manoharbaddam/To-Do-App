@@ -5,5 +5,5 @@ app_name= 'todo'
 
 urlpatterns = [
     path('',TaskListCreateView.as_view(),name='task-list'),
-    path('/<uuid:pk>/', TaskRetrieveUpdateDestroyAPIView.as_view(), name='task-actions'),
+    path('<uuid:pk>/', TaskRetrieveUpdateDestroyAPIView.as_view(), name='task-actions'),
 ]
