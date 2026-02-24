@@ -1,116 +1,141 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import api from "../../services/api";
 
 export default function Register() {
-    const navigate = useNavigate();
-    
     const [formData, setFormData] = useState({
+        username: "",
         email: "",
-        first_name: "",
-        last_name: "",
         password: "",
+        confirmPassword: ""
     });
-    
-    const [loading, setLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
 
-    const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        setLoading(true);
-        setError(""); // Clear previous errors
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
 
+    const handleRegister = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError("");
+
+        if (formData.password !== formData.confirmPassword) {
+            setError("Passwords do not match.");
+            return;
+        }
+
+        setIsLoading(true);
+        
         try {
-            // NOTE: Make sure "/users/register/" matches your Django urls.py endpoint
-            await api.post("/users/register/", formData);
+            // TODO: Plug in your api.post('/users/register/', formData) here
+            console.log("Registering...", formData);
             
-            alert("Registration successful! Please log in.");
-            navigate("/login"); // Send them to login to get their tokens
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 1000));
             
-        } catch (err: any) {
-            console.error(err);
-            // Extract error messages from Django REST Framework
-            const errorMessage = 
-                err.response?.data?.email?.[0] || 
-                err.response?.data?.detail || 
-                "Registration failed. Please try again.";
-            setError(errorMessage);
+        } catch (err) {
+            setError("Registration failed. Please try a different username.");
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
     };
 
-    // A clean way to handle all text inputs with one function
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
-    };
-
     return (
-        <div style={{ maxWidth: "400px", margin: "2rem auto", border: "1px solid #ccc", padding: "2rem", borderRadius: "8px" }}>
-            <h2>Create an Account</h2>
-            
-            {/* Display error message if registration fails */}
-            {error && <div style={{ color: "red", marginBottom: "1rem", fontWeight: "bold" }}>{error}</div>}
-
-            <form onSubmit={handleRegister} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                <div>
-                    <label>Email: </label><br/>
-                    <input 
-                        type="email" 
-                        name="email"
-                        required 
-                        value={formData.email}
-                        onChange={handleChange}
-                        style={{ width: "100%", padding: "0.5rem" }}
-                    />
+        <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center p-4">
+            <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 space-y-6 border border-gray-100">
+                
+                {/* Header */}
+                <div className="text-center">
+                    <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Create an account</h1>
+                    <p className="text-gray-500 mt-2">Start managing your tasks today.</p>
                 </div>
 
-                <div>
-                    <label>First Name: </label><br/>
-                    <input 
-                        type="text" 
-                        name="first_name"
-                        required 
-                        value={formData.first_name}
-                        onChange={handleChange}
-                        style={{ width: "100%", padding: "0.5rem" }}
-                    />
-                </div>
+                {/* Error Alert */}
+                {error && (
+                    <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm border border-red-100 flex items-center gap-2">
+                        <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        {error}
+                    </div>
+                )}
 
-                <div>
-                    <label>Last Name (Optional): </label><br/>
-                    <input 
-                        type="text" 
-                        name="last_name"
-                        value={formData.last_name}
-                        onChange={handleChange}
-                        style={{ width: "100%", padding: "0.5rem" }}
-                    />
-                </div>
+                {/* Form */}
+                <form onSubmit={handleRegister} className="space-y-4">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                        <input 
+                            type="text" 
+                            name="username"
+                            required 
+                            value={formData.username}
+                            onChange={handleChange}
+                            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900"
+                            placeholder="Choose a username"
+                        />
+                    </div>
 
-                <div>
-                    <label>Password: </label><br/>
-                    <input 
-                        type="password" 
-                        name="password"
-                        required 
-                        value={formData.password}
-                        onChange={handleChange}
-                        style={{ width: "100%", padding: "0.5rem" }}
-                    />
-                </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                        <input 
+                            type="email" 
+                            name="email"
+                            required 
+                            value={formData.email}
+                            onChange={handleChange}
+                            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900"
+                            placeholder="you@example.com"
+                        />
+                    </div>
 
-                <button type="submit" disabled={loading} style={{ padding: "0.5rem", marginTop: "1rem" }}>
-                    {loading ? "Registering..." : "Register"}
-                </button>
-            </form>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <input 
+                            type="password" 
+                            name="password"
+                            required 
+                            value={formData.password}
+                            onChange={handleChange}
+                            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900"
+                            placeholder="Create a password"
+                        />
+                    </div>
 
-            <p style={{ marginTop: "1rem", textAlign: "center" }}>
-                Already have an account? <Link to="/login">Login here</Link>
-            </p>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                        <input 
+                            type="password" 
+                            name="confirmPassword"
+                            required 
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
+                            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900"
+                            placeholder="Confirm your password"
+                        />
+                    </div>
+
+                    <button 
+                        type="submit" 
+                        disabled={isLoading}
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition-colors shadow-sm disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2 mt-2"
+                    >
+                        {isLoading ? (
+                            <>
+                                <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Creating account...
+                            </>
+                        ) : "Sign Up"}
+                    </button>
+                </form>
+
+                {/* Footer Link */}
+                <p className="text-center text-sm text-gray-600 mt-6">
+                    Already have an account?{' '}
+                    <a href="/login" className="text-blue-600 hover:text-blue-700 font-semibold transition-colors">
+                        Sign in here
+                    </a>
+                </p>
+            </div>
         </div>
     );
 }

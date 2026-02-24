@@ -41,51 +41,79 @@ export default function TaskForm({ initialData, onSubmit, onCancel }: TaskFormPr
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            {/* Title Input */}
             <div>
-                <label>Title: </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
                 <input 
                     type="text" 
                     required 
+                    placeholder="e.g., Update database schema"
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900"
                 />
             </div>
 
+            {/* Description Textarea */}
             <div>
-                <label>Description: </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                 <textarea 
+                    rows={3}
+                    placeholder="Add details about this task..."
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900 resize-none"
                 />
             </div>
 
-            <div>
-                <label>Status: </label>
-                <select 
-                    value={formData.status}
-                    onChange={(e) => setFormData({ ...formData, status: e.target.value as Task['status'] })}
-                >
-                    <option value="PENDING">Pending</option>
-                    <option value="IN_PROGRESS">In Progress</option>
-                    <option value="COMPLETED">Completed</option>
-                </select>
+            {/* Status & Priority Side-by-Side */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <select 
+                        value={formData.status}
+                        onChange={(e) => setFormData({ ...formData, status: e.target.value as Task['status'] })}
+                        className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900 cursor-pointer"
+                    >
+                        <option value="PENDING">Pending</option>
+                        <option value="IN_PROGRESS">In Progress</option>
+                        <option value="COMPLETED">Completed</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+                    <select 
+                        value={formData.priority}
+                        onChange={(e) => setFormData({ ...formData, priority: e.target.value as Task['priority'] })}
+                        className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900 cursor-pointer"
+                    >
+                        <option value="LOW">Low</option>
+                        <option value="MODERATE">Moderate</option>
+                        <option value="HIGH">High</option>
+                    </select>
+                </div>
             </div>
 
-            <div>
-                <label>Priority: </label>
-                <select 
-                    value={formData.priority}
-                    onChange={(e) => setFormData({ ...formData, priority: e.target.value as Task['priority'] })}
+            {/* Action Buttons */}
+            <div className="flex justify-end gap-3 pt-4 mt-2 border-t border-gray-100">
+                {onCancel && (
+                    <button 
+                        type="button" 
+                        onClick={onCancel}
+                        className="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-gray-200 transition-colors"
+                    >
+                        Cancel
+                    </button>
+                )}
+                <button 
+                    type="submit"
+                    className="px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-colors shadow-sm"
                 >
-                    <option value="LOW">Low</option>
-                    <option value="MODERATE">Moderate</option>
-                    <option value="HIGH">High</option>
-                </select>
+                    {initialData ? "Save Changes" : "Create Task"}
+                </button>
             </div>
-
-            <button type="submit">{initialData ? "Update Task" : "Create Task"}</button>
-            {onCancel && <button type="button" onClick={onCancel}>Cancel</button>}
         </form>
     );
 }
